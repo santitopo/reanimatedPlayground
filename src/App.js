@@ -10,6 +10,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import Events from './screens/events';
+import events from './screens/events';
 import screen1 from './screens/screen1';
 import screen2 from './screens/screen2';
 
@@ -25,12 +28,15 @@ const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen name="SharedValue" component={screen1} />
-        <Tab.Screen name="Settings" component={screen2} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <NavigationContainer>
+        <Tab.Navigator>
+          <Tab.Screen name="SharedValue" component={screen1} />
+          <Tab.Screen name="Modifiers" component={screen2} />
+          <Tab.Screen name="Events" component={events} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </GestureHandlerRootView>
   );
 };
 

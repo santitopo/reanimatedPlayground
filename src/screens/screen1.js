@@ -21,9 +21,24 @@ function Box() {
     };
   });
 
+  const customSpringStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: withSpring(offset.value * 255, {
+            damping: 200,
+            stiffness: 90, //rigidez
+          }),
+        },
+      ],
+    };
+  });
+
   return (
     <>
       <Animated.View style={[styles.box, animatedStyles]} />
+      <Animated.View style={[styles.box, customSpringStyles]} />
+
       {/*
       #1
       <Button onPress={() => (offset.value = Math.random())} title="Move" /> */}
@@ -40,6 +55,7 @@ function Box() {
 const styles = StyleSheet.create({
   box: {
     backgroundColor: '#1767AE',
+    marginVertical: 15,
     height: 100,
     width: 100,
     borderRadius: 20,
