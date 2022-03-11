@@ -13,6 +13,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Events from './screens/events';
 import events from './screens/events';
+import pager from './screens/pager';
 import screen1 from './screens/screen1';
 import screen2 from './screens/screen2';
 
@@ -31,9 +32,10 @@ const App = () => {
     <GestureHandlerRootView style={{flex: 1}}>
       <NavigationContainer>
         <Tab.Navigator>
-          <Tab.Screen name="SharedValue" component={screen1} />
-          <Tab.Screen name="Modifiers" component={screen2} />
+          <Tab.Screen name="Pager" component={pager} />
           <Tab.Screen name="Events" component={events} />
+          <Tab.Screen name="Modifiers" component={screen2} />
+          <Tab.Screen name="SharedValue" component={screen1} />
         </Tab.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
