@@ -1,142 +1,127 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text, NativeSyntheticEvent} from 'react-native';
 import {
   Gesture,
   GestureDetector,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
+import PagerView from 'react-native-pager-view';
 
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   useAnimatedGestureHandler,
   withSpring,
+  useHandler,
+  useEvent,
+  useDerivedValue,
 } from 'react-native-reanimated';
+import {AnimatedText} from '../components/AnimatedText';
+import {Pagination} from '../components/Pagination';
+import {
+  useAnimatedPagerScrollHandler,
+  useAnimatedPagerScrollStateHandler,
+  useAnimatedPagerSelectedPageHandler,
+} from '../components/useAnimatedPageHandler';
 
-function Balls() {
-  //Ball 1
-  const pressed = useSharedValue(false);
-  const animatedStyle1 = useAnimatedStyle(() => {
-    return {
-      backgroundColor: pressed.value ? '#FEEF86' : '#1767AE',
-      transform: [{scale: withSpring(pressed.value ? 1.2 : 1)}],
-    };
+const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
+
+const SLIDES = [
+  {color: 'red', key: 1},
+  {color: 'blue', key: 2},
+  {color: 'yellow', key: 3},
+  {color: 'green', key: 4},
+  {color: 'pink', key: 5},
+];
+
+const PagerExample = () => {
+  const scrollPosition = useSharedValue(0);
+  const scrollState = useSharedValue('idle');
+  const currentPage = useSharedValue(0);
+  const stringifiedCurrentPage = useDerivedValue(() => {
+    return `${currentPage.value + 1}`;
   });
-
-  const gesture1 = Gesture.Pan()
-    .onBegin((event, ctx) => {
-      pressed.value = true;
-    })
-    .onFinalize((event, ctx) => {
-      pressed.value = false;
-    });
-
-  //Ball 2
-  const isPressed = useSharedValue(false);
-  const offset = useSharedValue({x: 0, y: 0});
-  const start = useSharedValue({x: -0, y: 0});
-
-  const animatedStyle2 = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {translateX: withSpring(offset.value.x)},
-        {translateY: withSpring(offset.value.y)},
-        {scale: withSpring(isPressed.value ? 1.2 : 1)},
-      ],
-      backgroundColor: isPressed.value ? '#772E25' : '#1767AE',
-    };
+  const scrollHandler = useAnimatedPagerScrollHandler({
+    onPageScroll: e => {
+      'worklet';
+      console.log('hjey', e);
+      scrollPosition.value = e.offset + e.position;
+    },
   });
-
-  const gesture2 = Gesture.Pan()
-    .onStart(() => {
-      isPressed.value = true;
-    })
-    .onUpdate(e => {
-      offset.value = {
-        x: start.value.x + e.translationX,
-        y: start.value.y + e.translationY,
-      };
-    })
-    .onEnd(() => {
-      offset.value = {
-        x: start.value.x,
-        y: start.value.y,
-      };
-    })
-    .onFinalize(() => {
-      isPressed.value = false;
-    });
-
-  //Ball 3
-  const isPressed3 = useSharedValue(false);
-  const offset3 = useSharedValue({x: 0, y: 50});
-  const start3 = useSharedValue(null);
-
-  const animatedStyle3 = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {translateX: withSpring(offset3.value.x)},
-        {translateY: withSpring(offset3.value.y)},
-        {scale: withSpring(isPressed3.value ? 1.2 : 1)},
-      ],
-      backgroundColor: isPressed3.value ? '#772E25' : '#1767AE',
-    };
+  const scrollStateHandler = useAnimatedPagerScrollStateHandler({
+    onPageScrollStateChanged: e => {
+      'worklet';
+      scrollState.value = e.pageScrollState;
+    },
   });
-
-  const gesture3 = Gesture.Pan()
-    .onStart(() => {
-      isPressed3.value = true;
-      start3.value = {
-        x: offset3.value.x,
-        y: offset3.value.y,
-      };
-    })
-    .onUpdate(e => {
-      offset3.value = {
-        x: start3.value.x + e.translationX,
-        y: start3.value.y + e.translationY,
-      };
-    })
-    .onEnd(() => {
-      start3.value = {
-        x: offset3.value.x,
-        y: offset3.value.y,
-      };
-    })
-    .onFinalize(() => {
-      isPressed3.value = false;
-    });
-
+  const selectedPageHandler = useAnimatedPagerSelectedPageHandler({
+    onPageSelected: e => {
+      'worklet';
+      currentPage.value = e.position;
+    },
+  });
   return (
-    <>
-      <GestureDetector gesture={gesture1}>
-        <Animated.View style={[styles.ball, animatedStyle1]} />
-      </GestureDetector>
-      <GestureDetector gesture={gesture2}>
-        <Animated.View style={[styles.ball, animatedStyle2]} />
-      </GestureDetector>
-      <GestureDetector gesture={gesture3}>
-        <Animated.View style={[styles.ball, animatedStyle3]} />
-      </GestureDetector>
-    </>
+    <View style={styles.container}>
+      <Pagination numberOfSlides={SLIDES.length} position={scrollPosition} />
+      <View style={styles.pagerDetails}>
+        <AnimatedText
+          style={styles.pagerDetailsText}
+          text={stringifiedCurrentPage}
+        />
+        <AnimatedText style={styles.pagerDetailsText} text={scrollState} />
+      </View>
+      <AnimatedPagerView
+        initialPage={0}
+        onPageScroll={scrollHandler}
+        onPageScrollStateChanged={scrollStateHandler}
+        onPageSelected={selectedPageHandler}
+        orientation="horizontal"
+        style={styles.pager}>
+        {SLIDES.map(slide => (
+          <View
+            key={slide.key}
+            collapsable={false}
+            style={[styles.slide, {backgroundColor: slide.color}]}>
+            <Text style={styles.slideText}>{slide.key}</Text>
+          </View>
+        ))}
+      </AnimatedPagerView>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  ball: {
-    width: 100,
-    height: 100,
-    borderRadius: 100,
-    backgroundColor: '#1767AE',
-    alignSelf: 'center',
-    marginVertical: 15,
+  container: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  pager: {
+    alignSelf: 'stretch',
+    flex: 1,
+  },
+  pagerDetails: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+  },
+  pagerDetailsText: {
+    color: 'black',
+    fontSize: 20,
+  },
+  slide: {
+    alignItems: 'center',
+    height: '100%',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  slideText: {
+    color: 'white',
+    fontSize: 24,
   },
 });
 
 export default () => {
-  return (
-    <View style={{flex: 1}}>
-      <Balls />
-    </View>
-  );
+  return <PagerExample />;
 };
