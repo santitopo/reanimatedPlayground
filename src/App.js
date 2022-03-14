@@ -18,6 +18,7 @@ import pager from './screens/pager';
 import playground from './screens/playground';
 import screen1 from './screens/screen1';
 import screen2 from './screens/screen2';
+import svg from './screens/svg';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,6 +30,7 @@ const App = () => {
           screenOptions={() => ({
             unmountOnBlur: true,
           })}>
+          <Tab.Screen name="SVG" component={svg} />
           <Tab.Screen name="Playground" component={playground} />
           <Tab.Screen name="LayoutAnimation" component={layoutAnimations} />
           <Tab.Screen name="Pager" component={pager} />
