@@ -3,6 +3,7 @@ import {StyleSheet, View} from 'react-native';
 import {
   Gesture,
   GestureDetector,
+  PanGestureHandler,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 
@@ -23,6 +24,14 @@ function Balls() {
     };
   });
 
+  const gestureHandler1 = useAnimatedGestureHandler({
+    onStart: _ => {
+      pressed.value = true;
+    },
+    onFinish: _ => {
+      pressed.value = false;
+    },
+  });
   const gesture1 = Gesture.Pan()
     .onBegin((event, ctx) => {
       pressed.value = true;
@@ -34,7 +43,6 @@ function Balls() {
   //Ball 2
   const isPressed = useSharedValue(false);
   const offset = useSharedValue({x: 0, y: 0});
-  const start = useSharedValue({x: -0, y: 0});
 
   const animatedStyle2 = useAnimatedStyle(() => {
     return {
@@ -47,30 +55,32 @@ function Balls() {
     };
   });
 
-  const gesture2 = Gesture.Pan()
-    .onStart(() => {
+  const gestureHandler2 = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
       isPressed.value = true;
-    })
-    .onUpdate(e => {
-      offset.value = {
-        x: start.value.x + e.translationX,
-        y: start.value.y + e.translationY,
+      ctx.start = {
+        x: offset.value.x,
+        y: offset.value.y,
       };
-    })
-    .onEnd(() => {
+    },
+    onActive: (e, ctx) => {
       offset.value = {
-        x: start.value.x,
-        y: start.value.y,
+        x: ctx.start.x + e.translationX,
+        y: ctx.start.y + e.translationY,
       };
-    })
-    .onFinalize(() => {
+    },
+    onEnd: (_, ctx) => {
       isPressed.value = false;
-    });
+      offset.value = {
+        x: ctx.start.x,
+        y: ctx.start.y,
+      };
+    },
+  });
 
   //Ball 3
   const isPressed3 = useSharedValue(false);
   const offset3 = useSharedValue({x: 0, y: 50});
-  const start3 = useSharedValue(null);
 
   const animatedStyle3 = useAnimatedStyle(() => {
     return {
@@ -83,41 +93,36 @@ function Balls() {
     };
   });
 
-  const gesture3 = Gesture.Pan()
-    .onStart(() => {
+  const gestureHandler3 = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
       isPressed3.value = true;
-      start3.value = {
+      ctx.start = {
         x: offset3.value.x,
         y: offset3.value.y,
       };
-    })
-    .onUpdate(e => {
+    },
+    onActive: (e, ctx) => {
       offset3.value = {
-        x: start3.value.x + e.translationX,
-        y: start3.value.y + e.translationY,
+        x: ctx.start.x + e.translationX,
+        y: ctx.start.y + e.translationY,
       };
-    })
-    .onEnd(() => {
-      start3.value = {
-        x: offset3.value.x,
-        y: offset3.value.y,
-      };
-    })
-    .onFinalize(() => {
+    },
+    onFinish: _ => {
       isPressed3.value = false;
-    });
+    },
+  });
 
   return (
     <>
-      <GestureDetector gesture={gesture1}>
+      <PanGestureHandler onGestureEvent={gestureHandler1}>
         <Animated.View style={[styles.ball, animatedStyle1]} />
-      </GestureDetector>
-      <GestureDetector gesture={gesture2}>
+      </PanGestureHandler>
+      <PanGestureHandler onGestureEvent={gestureHandler2}>
         <Animated.View style={[styles.ball, animatedStyle2]} />
-      </GestureDetector>
-      <GestureDetector gesture={gesture3}>
+      </PanGestureHandler>
+      <PanGestureHandler onGestureEvent={gestureHandler3}>
         <Animated.View style={[styles.ball, animatedStyle3]} />
-      </GestureDetector>
+      </PanGestureHandler>
     </>
   );
 }
