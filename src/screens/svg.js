@@ -1,13 +1,10 @@
 import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, View} from 'react-native';
 
 import Animated, {
   useSharedValue,
-  useAnimatedStyle,
-  withTiming,
   withSpring,
   useAnimatedProps,
-  useDerivedValue,
 } from 'react-native-reanimated';
 import Svg, {Path} from 'react-native-svg';
 
@@ -32,7 +29,7 @@ function Box() {
   // attach animated props to an SVG path using animatedProps
   return (
     <>
-      <View style={{flex: 1, borderWidth: 2, alignItems: 'center'}}>
+      <View style={{flex: 1}}>
         <Svg>
           <AnimatedPath animatedProps={animatedProps} />
         </Svg>
@@ -48,16 +45,6 @@ function Box() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  box: {
-    backgroundColor: '#1767AE',
-    marginVertical: 15,
-    height: 100,
-    width: 100,
-    borderRadius: 20,
-  },
-});
 
 export default () => {
   return (

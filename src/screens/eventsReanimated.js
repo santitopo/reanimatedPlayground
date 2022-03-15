@@ -1,17 +1,15 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-  PanGestureHandler,
-  TapGestureHandler,
-} from 'react-native-gesture-handler';
+import {StyleSheet, View, Button} from 'react-native';
+import {Gesture, PanGestureHandler} from 'react-native-gesture-handler';
 
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   useAnimatedGestureHandler,
   withSpring,
+  withDecay,
+  cancelAnimation,
+  withTiming,
 } from 'react-native-reanimated';
 
 function Balls() {
@@ -42,13 +40,15 @@ function Balls() {
 
   //Ball 2
   const isPressed = useSharedValue(false);
-  const offset = useSharedValue({x: 0, y: 0});
+  //const offset = useSharedValue({x: 0, y: 0});
+  const offsetX = useSharedValue(-150);
+  const offsetY = useSharedValue(0);
 
   const animatedStyle2 = useAnimatedStyle(() => {
     return {
       transform: [
-        {translateX: withSpring(offset.value.x)},
-        {translateY: withSpring(offset.value.y)},
+        {translateX: offsetX.value},
+        {translateY: offsetY.value},
         {scale: withSpring(isPressed.value ? 1.2 : 1)},
       ],
       backgroundColor: isPressed.value ? '#772E25' : '#1767AE',
@@ -58,29 +58,27 @@ function Balls() {
   const gestureHandler2 = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       isPressed.value = true;
+      cancelAnimation(offsetX);
+      cancelAnimation(offsetY);
       ctx.start = {
-        x: offset.value.x,
-        y: offset.value.y,
+        x: offsetX.value,
+        y: offsetY.value,
       };
     },
     onActive: (e, ctx) => {
-      offset.value = {
-        x: ctx.start.x + e.translationX,
-        y: ctx.start.y + e.translationY,
-      };
+      offsetX.value = withSpring(ctx.start.x + e.translationX);
+      offsetY.value = withSpring(ctx.start.y + e.translationY);
     },
     onEnd: (_, ctx) => {
       isPressed.value = false;
-      offset.value = {
-        x: ctx.start.x,
-        y: ctx.start.y,
-      };
+      offsetX.value = withSpring(ctx.start.x);
+      offsetY.value = withSpring(ctx.start.y);
     },
   });
 
   //Ball 3
   const isPressed3 = useSharedValue(false);
-  const offset3 = useSharedValue({x: 0, y: 50});
+  const offset3 = useSharedValue({x: 0, y: 0});
 
   const animatedStyle3 = useAnimatedStyle(() => {
     return {
@@ -112,6 +110,36 @@ function Balls() {
     },
   });
 
+  //Ball 4
+  const isPressed4 = useSharedValue(false);
+  const x4 = useSharedValue(0);
+
+  const animatedStyle4 = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: x4.value,
+        },
+      ],
+    };
+  });
+
+  const gestureHandler4 = useAnimatedGestureHandler({
+    onStart: (_, ctx) => {
+      ctx.startX = x4.value;
+    },
+    onActive: (event, ctx) => {
+      x4.value = ctx.startX + event.translationX;
+    },
+    onEnd: evt => {
+      x4.value = withDecay({
+        velocity: evt.velocityX,
+        velocityFactor: 1,
+        clamp: [-200, 200], // optionally define boundaries for the animation
+      });
+    },
+  });
+
   return (
     <>
       <PanGestureHandler onGestureEvent={gestureHandler1}>
@@ -123,6 +151,14 @@ function Balls() {
       <PanGestureHandler onGestureEvent={gestureHandler3}>
         <Animated.View style={[styles.ball, animatedStyle3]} />
       </PanGestureHandler>
+      <PanGestureHandler onGestureEvent={gestureHandler4}>
+        <Animated.View style={[styles.ball, animatedStyle4]} />
+      </PanGestureHandler>
+
+      <Button
+        title="Move ball 2"
+        onPress={() => (offsetX.value = withTiming(150, {duration: 3000}))}
+      />
     </>
   );
 }

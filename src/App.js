@@ -11,6 +11,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import React from 'react';
 import {Text, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import customLayoutAnimations from './screens/customLayoutAnimations';
 import eventsGestureHandler from './screens/eventsReanimated';
 import eventsReanimated from './screens/eventsReanimated';
 import layoutAnimations from './screens/layoutAnimations';
@@ -32,6 +33,7 @@ const App = () => {
           })}>
           <Tab.Screen name="SVG" component={svg} />
           <Tab.Screen name="Playground" component={playground} />
+          <Tab.Screen name="CustomLA" component={customLayoutAnimations} />
           <Tab.Screen name="LayoutAnimation" component={layoutAnimations} />
           <Tab.Screen name="Pager" component={pager} />
           <Tab.Screen name="Events_R" component={eventsReanimated} />
