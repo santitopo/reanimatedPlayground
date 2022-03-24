@@ -1,40 +1,63 @@
 import React from 'react';
 import {Image, TouchableOpacity, Text, View, StyleSheet} from 'react-native';
-import Animated, {SlideInRight, SlideOutRight} from 'react-native-reanimated';
+import Animated, {
+  Layout,
+  SlideInRight,
+  SlideOutRight,
+} from 'react-native-reanimated';
 
 const defaultUrl = {
   uri: 'https://www.swissotel.com/assets/0/92/3686/3768/3770/6442451433/ae87da19-9f23-450a-8927-6f4c700aa104.jpg',
 };
 
-const Card = ({hotel, onPress}) => {
+const Button = () => {
   return (
-    <Animated.View entering={SlideInRight} exiting={SlideOutRight}>
+    <View style={styles.button}>
+      <Text style={styles.buttonLabel}>Book now</Text>
+    </View>
+  );
+};
+
+const Card = ({square, hotel, onPress}) => {
+  return (
+    <Animated.View
+      layout={Layout.springify()}
+      entering={SlideInRight}
+      exiting={SlideOutRight}
+      style={{width: square ? '50%' : '100%'}}>
       <TouchableOpacity onPress={onPress}>
         <View style={styles.container}>
           <View style={styles.imageWrapper}>
             <Image style={styles.image} source={hotel.url} />
-            <View style={styles.subContainer}>
-              <Text style={styles.title}>{hotel.name}</Text>
-              <Text style={styles.subtitle}>{hotel.place}</Text>
-            </View>
-            <View style={styles.placeholder} />
-            <View>
-              <View style={styles.row}>
-                <View style={styles.placeholder} />
-                <Image
-                  source={{
-                    uri: 'https://cdn.picpng.com/star/star-icon-black-favorite-rating-73483.png',
-                  }}
-                  style={styles.starImage}
-                />
-                <Text style={styles.ratingText}>{hotel.stars}</Text>
+            <View style={{flex: 1, flexDirection: square ? 'column' : 'row'}}>
+              <View style={styles.subContainer}>
+                <Text
+                  allowFontScaling={square}
+                  numberOfLines={1}
+                  style={styles.title}>
+                  {hotel.name}
+                </Text>
+                <Text style={styles.subtitle}>{hotel.place}</Text>
               </View>
-              <View style={styles.placeholder} />
-              <View style={styles.button}>
-                <Text style={styles.buttonLabel}>Book now</Text>
+              {!square && <View style={styles.placeholder} />}
+              <View>
+                <View style={styles.row}>
+                  <View style={styles.placeholder} />
+                  <Image
+                    source={{
+                      uri: 'https://cdn.picpng.com/star/star-icon-black-favorite-rating-73483.png',
+                    }}
+                    style={styles.starImage}
+                  />
+                  <Text style={styles.ratingText}>{hotel.stars}</Text>
+                </View>
+                <View style={styles.placeholder} />
+                {!square && <Button />}
               </View>
             </View>
           </View>
+
+          {square && <Button />}
         </View>
       </TouchableOpacity>
     </Animated.View>
@@ -49,6 +72,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#0097e6',
