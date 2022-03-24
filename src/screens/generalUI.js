@@ -1,5 +1,5 @@
 import React, {useState, useReducer} from 'react';
-import {TouchableOpacity, Image, Text, StyleSheet} from 'react-native';
+import {TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import BottomTab from '../components/BottomTab';
 import Cards from '../components/Cards';

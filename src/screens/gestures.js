@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, View, Button} from 'react-native';
-import {Gesture, PanGestureHandler} from 'react-native-gesture-handler';
+import {StyleSheet, Button} from 'react-native';
+import {PanGestureHandler} from 'react-native-gesture-handler';
 
 import Animated, {
   useSharedValue,
@@ -22,7 +22,6 @@ function Balls() {
       transform: [{scale: withSpring(pressed.value ? 1.2 : 1)}],
     };
   });
-
   const gestureHandler1 = useAnimatedGestureHandler({
     onStart: _ => {
       pressed.value = true;
@@ -31,17 +30,9 @@ function Balls() {
       pressed.value = false;
     },
   });
-  const gesture1 = Gesture.Pan()
-    .onBegin((event, ctx) => {
-      pressed.value = true;
-    })
-    .onFinalize((event, ctx) => {
-      pressed.value = false;
-    });
 
   //Ball 2
   const isPressed = useSharedValue(false);
-  //const offset = useSharedValue({x: 0, y: 0});
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
 
@@ -55,7 +46,6 @@ function Balls() {
       backgroundColor: isPressed.value ? '#772E25' : '#1767AE',
     };
   });
-
   const gestureHandler2 = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       isPressed.value = true;
@@ -91,7 +81,6 @@ function Balls() {
       backgroundColor: isPressed3.value ? '#772E25' : '#1767AE',
     };
   });
-
   const gestureHandler3 = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       isPressed3.value = true;
@@ -126,7 +115,6 @@ function Balls() {
       backgroundColor: isPressed4.value ? '#772E25' : '#1767AE',
     };
   });
-
   const gestureHandler4 = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
       isPressed4.value = true;
