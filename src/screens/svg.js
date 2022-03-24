@@ -6,6 +6,7 @@ import Animated, {
   withSpring,
   useAnimatedProps,
 } from 'react-native-reanimated';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import Svg, {Path} from 'react-native-svg';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
@@ -15,14 +16,16 @@ function Box() {
   const animatedProps = useAnimatedProps(() => {
     // draw a circle
     const path = `
-      M 100, 100
-      m -${radius.value}, 0
-      a ${radius.value},${radius.value} 0 1,0 ${radius.value * 2},0
-      a ${radius.value},${radius.value} 0 1,0 ${-radius.value * 2},0
+        M200 ${radius.value}
+        L250 65
+        L${radius.value} 25
+        L25 ${radius.value}
+        L${radius.value} 300
       `;
     return {
       d: path,
       fill: `rgba(20,222,129,${radius.value / 50 - 0.5})`,
+      stroke: 'red',
     };
   });
 
@@ -36,9 +39,9 @@ function Box() {
       </View>
       <View style={{flex: 1}}>
         <Button
-          title="Random size"
+          title="Random size and opacity"
           onPress={() => {
-            radius.value = withSpring((Math.random() + 0.5) * 50);
+            radius.value = withSpring((Math.random() + 0.5) * 250);
           }}
         />
       </View>
@@ -48,8 +51,8 @@ function Box() {
 
 export default () => {
   return (
-    <View style={{flex: 1, justifyContent: 'center'}}>
+    <SafeAreaView style={{flex: 1, justifyContent: 'center'}}>
       <Box />
-    </View>
+    </SafeAreaView>
   );
 };

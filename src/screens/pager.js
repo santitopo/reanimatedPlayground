@@ -44,7 +44,6 @@ const PagerExample = () => {
   const scrollHandler = useAnimatedPagerScrollHandler({
     onPageScroll: e => {
       'worklet';
-      console.log('hjey', e);
       scrollPosition.value = e.offset + e.position;
     },
   });

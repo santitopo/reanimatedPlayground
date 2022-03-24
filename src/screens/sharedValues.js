@@ -6,9 +6,11 @@ import Animated, {
   useAnimatedStyle,
   withTiming,
   withSpring,
+  withDecay,
+  withDelay,
 } from 'react-native-reanimated';
 
-function Box() {
+function Boxes() {
   const offset = useSharedValue(0);
 
   const animatedStyles = useAnimatedStyle(() => {
@@ -20,7 +22,6 @@ function Box() {
       ],
     };
   });
-
   const customSpringStyles = useAnimatedStyle(() => {
     return {
       transform: [
@@ -33,19 +34,22 @@ function Box() {
       ],
     };
   });
+  const widthAnimationStyle = useAnimatedStyle(() => {
+    return {
+      width: withDelay(200, withTiming(offset.value * 255)),
+    };
+  });
 
   return (
     <>
       <Animated.View style={[styles.box, animatedStyles]} />
       <Animated.View style={[styles.box, customSpringStyles]} />
-
-      {/*
-      #1
-      <Button onPress={() => (offset.value = Math.random())} title="Move" /> */}
-
+      <Animated.View style={[styles.redBox, widthAnimationStyle]} />
       <Button
         //onPress={() => (offset.value = withSpring(Math.random()))}
-        onPress={() => (offset.value = Math.random())}
+        onPress={() => {
+          offset.value = Math.random();
+        }}
         title="Move"
       />
     </>
@@ -60,12 +64,19 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 20,
   },
+  redBox: {
+    backgroundColor: '#c0392b',
+    marginVertical: 15,
+    height: 10,
+    borderTopEndRadius: 20,
+    borderBottomEndRadius: 20,
+  },
 });
 
 export default () => {
   return (
     <View style={{flex: 1, justifyContent: 'center'}}>
-      <Box />
+      <Boxes />
     </View>
   );
 };

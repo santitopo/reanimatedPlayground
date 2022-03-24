@@ -11,13 +11,14 @@ import Animated, {
   cancelAnimation,
   withTiming,
 } from 'react-native-reanimated';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 function Balls() {
   //Ball 1
   const pressed = useSharedValue(false);
   const animatedStyle1 = useAnimatedStyle(() => {
     return {
-      backgroundColor: pressed.value ? '#FEEF86' : '#1767AE',
+      backgroundColor: pressed.value ? '#772E25' : '#1767AE',
       transform: [{scale: withSpring(pressed.value ? 1.2 : 1)}],
     };
   });
@@ -41,7 +42,7 @@ function Balls() {
   //Ball 2
   const isPressed = useSharedValue(false);
   //const offset = useSharedValue({x: 0, y: 0});
-  const offsetX = useSharedValue(-150);
+  const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
 
   const animatedStyle2 = useAnimatedStyle(() => {
@@ -120,12 +121,15 @@ function Balls() {
         {
           translateX: x4.value,
         },
+        {scale: withSpring(isPressed4.value ? 1.2 : 1)},
       ],
+      backgroundColor: isPressed4.value ? '#772E25' : '#1767AE',
     };
   });
 
   const gestureHandler4 = useAnimatedGestureHandler({
     onStart: (_, ctx) => {
+      isPressed4.value = true;
       ctx.startX = x4.value;
     },
     onActive: (event, ctx) => {
@@ -137,6 +141,9 @@ function Balls() {
         velocityFactor: 1,
         clamp: [-200, 200], // optionally define boundaries for the animation
       });
+    },
+    onFinish: evt => {
+      isPressed4.value = false;
     },
   });
 
@@ -176,8 +183,8 @@ const styles = StyleSheet.create({
 
 export default () => {
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
       <Balls />
-    </View>
+    </SafeAreaView>
   );
 };
