@@ -13,11 +13,10 @@ import React from 'react';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import gestures from './screens/gestures';
 import GeneralScreen from './screens/generalUI';
-import pager from './screens/pager';
-import playground from './screens/playground';
 import screen2 from './screens/modifiers';
 import svg from './screens/svg';
 import sharedValues from './screens/sharedValues';
+import AnimatedDemo from './screens/animatedDemo';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -32,9 +31,8 @@ function App() {
             headerTintColor: 'white',
             headerStyle: {backgroundColor: '#0097e6'},
           }}>
-          <Stack.Screen name="Sample" component={GeneralScreen} />
-
           <Stack.Screen name="Home" component={TabNav} />
+          <Stack.Screen name="Sample" component={GeneralScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
@@ -48,10 +46,11 @@ const TabNav = () => {
         headerShown: false,
         unmountOnBlur: true,
       })}>
-      <Tab.Screen name="SVG" component={svg} />
-      <Tab.Screen name="Gestures" component={gestures} />
-      <Tab.Screen name="Modifiers" component={screen2} />
+      <Tab.Screen name="Animated" component={AnimatedDemo} />
       <Tab.Screen name="SharedValue" component={sharedValues} />
+      <Tab.Screen name="Modifiers" component={screen2} />
+      <Tab.Screen name="Gestures" component={gestures} />
+      <Tab.Screen name="SVG" component={svg} />
     </Tab.Navigator>
   );
 };
