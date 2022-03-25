@@ -28,12 +28,13 @@ function App() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
-            headerShown: false,
+            headerShown: true,
             headerTintColor: 'white',
             headerStyle: {backgroundColor: '#0097e6'},
           }}>
-          <Stack.Screen name="Home" component={TabNav} />
           <Stack.Screen name="Sample" component={GeneralScreen} />
+
+          <Stack.Screen name="Home" component={TabNav} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
