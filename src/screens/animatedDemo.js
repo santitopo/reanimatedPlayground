@@ -18,7 +18,8 @@ export default function AnimatedDemo() {
     }).start();
   };
 
-  //Uncomment for heavy work
+  //--- Uncomment for heavy work ----
+
   // useEffect(() => {
   //   const timer = setInterval(() => {
   //     for (let i = 0; i < 100000000; i++) {}
